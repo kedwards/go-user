@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_DB: usermgmt
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: dbpassword
+    volumes:
+      - go-user-db:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  dbeaver:
+    container_name: dbeaver_container
+    image: dbeaver/cloudbeaver:latest
+    restart: always
+    ports:
+      - "8081:8978"
+    volumes:
+      - /var/cloudbeaver/workspace:/opt/cloudbeaver/workspace
+
+  # mailhog:
+  #   image: mailhog/mailhog
+  #   logging:
+  #     driver: 'none'  # disable saving logs
+  #   ports:
+  #     - 1025:1025 # smtp server
+  #     - 8025:8025 # web ui
+
+volumes:
+  go-user-db:
+    driver: local
