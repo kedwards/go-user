@@ -13,6 +13,27 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
+      
+  go-user:
+    build:
+      context: ./api/
+      args:
+        - VERSION=${VERSION}
+        - PORT=${PORT}
+    image: go-user:${VERSION}
+    ports:
+      - ${PORT}:${PORT}
+
+  nginx-proxy:
+    build:
+      context: ./nginx-proxy/
+      args:
+        - service=${SERVICE}
+        - port=${PORT}
+        - VERSION=${VERSION}
+    image: nginx-proxy:${VERSION}
+    ports:
+      - 80:80
 
   dbeaver:
     container_name: dbeaver_container
@@ -22,14 +43,6 @@ services:
       - "8081:8978"
     volumes:
       - /var/cloudbeaver/workspace:/opt/cloudbeaver/workspace
-
-  # mailhog:
-  #   image: mailhog/mailhog
-  #   logging:
-  #     driver: 'none'  # disable saving logs
-  #   ports:
-  #     - 1025:1025 # smtp server
-  #     - 8025:8025 # web ui
 
 volumes:
   go-user-db:

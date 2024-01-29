@@ -12,7 +12,16 @@ import (
 	"github.com/kedwards/go-user/internal/models"
 )
 
-const version = "1.0.0"
+const (
+	version = "1.0.0"
+	port = "8888"
+	dbhost = "localhost"
+	dbname = "usermgmt"
+	dbuser = "postgres"
+	dbpassword = "dbpassword"
+	dbport = "5432"
+	dbssl = "disable"
+)
 
 type config struct {
 	env string
@@ -51,13 +60,13 @@ func (app *application) serve() error {
 func main() {
 	var cfg config
 
-  flag.IntVar(&cfg.port, "port", 4001, "Server port to listen on")
-	flag.StringVar(&cfg.dbname, "dbname", "usermgmt", "Database name")
-	flag.StringVar(&cfg.dbuser, "dbuser", "postgres", "Database user")
-	flag.StringVar(&cfg.dbpass, "dbpass", "dbpassword", "Database password")
-	flag.StringVar(&cfg.dbhost, "dbhost", "localhost", "Database host")
-  flag.StringVar(&cfg.dbport, "dbport", "5432", "Database port")
-	flag.StringVar(&cfg.dbssl, "dbssl", "disable", "Database ssl setting (disable, prefer, require)")
+    flag.IntVar(&cfg.port, "port", port, "Server port to listen on")
+	flag.StringVar(&cfg.dbname, "dbname", dbname, "Database name")
+	flag.StringVar(&cfg.dbuser, "dbuser", dbuser, "Database user")
+	flag.StringVar(&cfg.dbpass, "dbpass", dbpassword, "Database password")
+	flag.StringVar(&cfg.dbhost, "dbhost", dbhost, "Database host")
+    flag.StringVar(&cfg.dbport, "dbport", dbport, "Database port")
+	flag.StringVar(&cfg.dbssl, "dbssl", dbssl, "Database ssl setting (disable, prefer, require)")
 
 	flag.Parse()
 
