@@ -12,9 +12,9 @@ import (
 	"github.com/kedwards/go-user/internal/models"
 )
 
-const (
+var (
 	version = "1.0.0"
-	port = "8888"
+	port = 8888
 	dbhost = "localhost"
 	dbname = "usermgmt"
 	dbuser = "postgres"
@@ -60,12 +60,12 @@ func (app *application) serve() error {
 func main() {
 	var cfg config
 
-    flag.IntVar(&cfg.port, "port", port, "Server port to listen on")
+  flag.IntVar(&cfg.port, "port", port, "Server port to listen on")
 	flag.StringVar(&cfg.dbname, "dbname", dbname, "Database name")
 	flag.StringVar(&cfg.dbuser, "dbuser", dbuser, "Database user")
 	flag.StringVar(&cfg.dbpass, "dbpass", dbpassword, "Database password")
 	flag.StringVar(&cfg.dbhost, "dbhost", dbhost, "Database host")
-    flag.StringVar(&cfg.dbport, "dbport", dbport, "Database port")
+  flag.StringVar(&cfg.dbport, "dbport", dbport, "Database port")
 	flag.StringVar(&cfg.dbssl, "dbssl", dbssl, "Database ssl setting (disable, prefer, require)")
 
 	flag.Parse()

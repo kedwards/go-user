@@ -1,6 +1,5 @@
-version: "3.8"
 services:
-  postgres:
+  db:
     container_name: postgres
     image: postgres:alpine
     restart: always
@@ -13,14 +12,22 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
-      
+    healthcheck:
+      test: "pg_isready -U postgres"
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   go-user:
     build:
       context: ./api/
       args:
         - VERSION=${VERSION}
-        - PORT=${PORT}
+        - DB_HOST=${DB_HOST}
     image: go-user:${VERSION}
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - ${PORT}:${PORT}
 
@@ -28,10 +35,12 @@ services:
     build:
       context: ./nginx-proxy/
       args:
-        - service=${SERVICE}
-        - port=${PORT}
+        - PORT=${PORT}
         - VERSION=${VERSION}
+        - PROXY_HOST=${PROXY_HOST}
     image: nginx-proxy:${VERSION}
+    depends_on:
+      - go-user
     ports:
       - 80:80
 
@@ -43,7 +52,6 @@ services:
       - "8081:8978"
     volumes:
       - /var/cloudbeaver/workspace:/opt/cloudbeaver/workspace
-
 volumes:
   go-user-db:
     driver: local

@@ -1,8 +1,8 @@
 FROM nginx
 
-ARG proxy_host=go-web
-ARG port=8888
+ARG PROXY_HOST go-user
+ARG PORT 8888
 
 COPY default.conf /etc/nginx/conf.d
 
-RUN sed -i "s|#PROXY_HOST#|${proxy_host}|;s|#PORT#|${port}|" /etc/nginx/conf.d/default.conf
+RUN sed -i "s|#PROXY_HOST#|${PROXY_HOST}|;s|#PORT#|${PORT}|" /etc/nginx/conf.d/default.conf
