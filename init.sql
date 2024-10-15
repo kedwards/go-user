@@ -7,8 +7,8 @@ GRANT ALL PRIVILEGES ON DATABASE usermgmt TO dbuser;
 CREATE TABLE public.users (
 	email text NOT NULL,
 	password text NOT NULL,
-	firstname text NOT NULL,
-	lastname text NOT NULL,
+	first_name text NOT NULL,
+	last_name text NOT NULL,
 	role text NOT NULL,
 	username text NOT NULL,
 	created_at timestamptz NOT NULL,

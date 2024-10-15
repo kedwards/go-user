@@ -23,11 +23,12 @@ services:
       context: ./api/
       args:
         - VERSION=${VERSION}
-        - DB_HOST=${DB_HOST}
     image: go-user:${VERSION}
     depends_on:
       db:
         condition: service_healthy
+    environment:
+      DBHOST: ${DBHOST}
     ports:
       - ${PORT}:${PORT}
 

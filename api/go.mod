@@ -7,6 +7,7 @@ require (
 	github.com/go-chi/cors v1.2.1
 	github.com/jackc/pgconn v1.14.1
 	github.com/jackc/pgx/v4 v4.18.1
+	github.com/peterbourgon/ff/v3 v3.4.0
 )
 
 require (

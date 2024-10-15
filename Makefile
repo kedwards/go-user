@@ -6,11 +6,10 @@ build_date := $(shell date +'%Y-%m-%dT%H:%M:%SZ')
 url_endpoint := usermgmt/health-status
 
 APP ?= go-user
-DB_HOST ?= db
+DBHOST ?= db
+PORT ?= 8888
 VERSION ?= $(tag_or_branch_name)
-
-LDFLAGS := "-X main.date=$(build_date) -X main.dbhost=$(DB_HOST) -X main.version=$(VERSION)"
-
+LDFLAGS := "-X main.date=$(build_date) -X main.version=$(VERSION)"
 DEFAULT_GOAL:= help
 
 ##@ [Targets]
@@ -36,7 +35,7 @@ clean:  ## Cleans older builds and code, make clea
 
 # docker
 cbuild: ## Build the application as container image, make cbuild <build-envs
-	@docker build --build-arg DB_HOST=$(DB_HOST) --build-arg VERSION=$(VERSION) --build-arg PORT=$(PORT) -t $(APP):$(VERSION) ./api/
+	@docker build --build-arg VERSION=$(VERSION) -t $(APP):$(VERSION) ./api/
 
 crun: cbuild ## Run the application as container images, make crun <build-envs>
 	@docker run -itd --rm --name $(APP) -p $(PORT):$(PORT) $(APP):$(VERSION) && \
@@ -52,9 +51,9 @@ cstop: ## Stop the running containers, make cstop
 
 # docker compose
 up: ## Build and run app-stack via docker-compose, make up <build-envs>
-	@sed -i 's|^VERSION:.*$$|VERSION: $(VERSION)|;s|^DB_HOST:.*$$|DB_HOST: $(DB_HOST)|' .env && \
+	@sed -i 's|^VERSION:.*$$|VERSION: $(VERSION)|;s|^DBHOST:.*$$|DBHOST: $(DBHOST)|' .env && \
 		docker compose up -d --build && \
-		echo http://localhost:8888/$(url_endpoint) && \
+		echo http://localhost:$(PORT)/$(url_endpoint) && \
 		echo http://localhost/$(url_endpoint)
 
 down: ## Stop docker compose services, make down

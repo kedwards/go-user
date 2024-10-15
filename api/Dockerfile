@@ -1,7 +1,6 @@
 FROM golang:alpine AS build
 
 ARG VERSION=0.0.0
-ARG DB_HOST=db
 
 RUN apk --no-cache add gcc g++ make git
 
@@ -11,7 +10,7 @@ COPY . .
 
 RUN go mod tidy
 
-RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "-X main.version=${VERSION} -X main.dbhost=${DB_HOST}" -o bin/main cmd/*.go
+RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "-X main.version=${VERSION}" -o bin/main cmd/*.go
 
 FROM alpine
 

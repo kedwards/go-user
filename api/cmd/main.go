@@ -10,18 +10,10 @@ import (
 
 	"github.com/kedwards/go-user/internal/driver"
 	"github.com/kedwards/go-user/internal/models"
+  "github.com/peterbourgon/ff/v3"
 )
 
-var (
-	version = "1.0.0"
-	port = 8888
-	dbhost = "localhost"
-	dbname = "usermgmt"
-	dbuser = "postgres"
-	dbpassword = "dbpassword"
-	dbport = "5432"
-	dbssl = "disable"
-)
+var version = "0.0.0"
 
 type config struct {
 	env string
@@ -60,13 +52,28 @@ func (app *application) serve() error {
 func main() {
 	var cfg config
 
-  flag.IntVar(&cfg.port, "port", port, "Server port to listen on")
-	flag.StringVar(&cfg.dbname, "dbname", dbname, "Database name")
-	flag.StringVar(&cfg.dbuser, "dbuser", dbuser, "Database user")
-	flag.StringVar(&cfg.dbpass, "dbpass", dbpassword, "Database password")
-	flag.StringVar(&cfg.dbhost, "dbhost", dbhost, "Database host")
-  flag.StringVar(&cfg.dbport, "dbport", dbport, "Database port")
-	flag.StringVar(&cfg.dbssl, "dbssl", dbssl, "Database ssl setting (disable, prefer, require)")
+	fs := flag.NewFlagSet("go-user", flag.ContinueOnError)
+  var (
+	  port = fs.Int("port", 8888, "Server port to listen on")
+	  dbhost = fs.String("dbhost", "localhost", "Database host")
+		dbname = fs.String("dbname", "usermgmt", "Database name")
+		dbuser = fs.String("dbuser", "postgres", "Database user")
+    dbpassword = fs.String("dbpass", "dbpassword", "Database password")
+    dbport = fs.String("dbport", "5432", "Database port")
+    dbssl = fs.String("dbssl", "disable", "Database ssl")
+  )
+	if err := ff.Parse(fs, os.Args[1:], ff.WithEnvVars()); err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
+
+  flag.IntVar(&cfg.port, "port", *port, "Server port to listen on")
+	flag.StringVar(&cfg.dbname, "dbname", *dbname, "Database name")
+	flag.StringVar(&cfg.dbuser, "dbuser", *dbuser, "Database user")
+	flag.StringVar(&cfg.dbpass, "dbpass", *dbpassword, "Database password")
+	flag.StringVar(&cfg.dbhost, "dbhost", *dbhost, "Database host")
+  flag.StringVar(&cfg.dbport, "dbport", *dbport, "Database port")
+	flag.StringVar(&cfg.dbssl, "dbssl", *dbssl, "Database ssl setting (disable, prefer, require)")
 
 	flag.Parse()
 
